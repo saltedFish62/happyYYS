@@ -6,6 +6,7 @@ import random
 from ctypes import *
 import pyautogui
 import numpy as np
+import time
 
 
 # search for the windows of yys
@@ -60,9 +61,23 @@ def capture(win):
 
 
 # 模板匹配查找
-def find(img, path):
+def find(win, path):
+    img = capture(win)
     templLoc = pyautogui.locateAll(img, path, grayscale=True, confidence=0.8)
     return list(templLoc)
+
+
+# 是否存在
+def has(win, path):
+    return len(find(win=win, path=path)) != 0
+
+
+# 休眠一段时间
+def sleep(min, max):
+    if min == max:
+        time.sleep(min)
+    else:
+        time.sleep(random.randint(min*10, max*10) / 10)
 
 if __name__ == "__main__":
     wins = search()
