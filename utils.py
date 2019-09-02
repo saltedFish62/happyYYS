@@ -6,7 +6,6 @@ import random
 from ctypes import *
 import pyautogui
 import numpy as np
-import cv2
 
 
 # search for the windows of yys
@@ -47,9 +46,9 @@ def click(win, delX, delY):
 
 # 点击窗口的范围
 def clickRange(win, box):
-    (x1, y1, x2, y2) = box
-    x = random.randint(int(x1), int(x2))
-    y = random.randint(int(y1), int(y2))
+    (left, top, w, h) = box
+    x = random.randint(int(left), int(left+w))
+    y = random.randint(int(top), int(top+h))
     click(win, x, y)
 
 
@@ -57,11 +56,13 @@ def clickRange(win, box):
 def capture(win):
     active(win)
     rect = win32gui.GetWindowRect(win)
-    imageRGB = pyautogui.screenshot(region=(rect[0], rect[1], 600, rect[3]))
-    imageGray = cv2.cvtColor(np.asarray(imageRGB), cv2.COLOR_RGB2GRAY)
-    return imageGray
+    return pyautogui.screenshot(region=(rect[0], rect[1], 600, rect[3]))
 
+
+# 模板匹配查找
+def find(img, path):
+    templLoc = pyautogui.locateAll(img, path, grayscale=True, confidence=0.8)
+    return list(templLoc)
 
 if __name__ == "__main__":
-    wins = search()
-    setPos(wins[0], 0, 0, 600, 0)
+    pass
