@@ -2,5 +2,5 @@
     "python.linting.pylintArgs": [
         "--generate-members"
     ],
-    "python.pythonPath": "/usr/local/opt/python/bin/python3.7"
+    "python.pythonPath": "P:\\Python37\\python.exe"
 }

@@ -65,4 +65,9 @@ def find(img, path):
     return list(templLoc)
 
 if __name__ == "__main__":
+    wins = search()
+    i = 0
+    for win in wins:
+        setPos(win, 600 * i, 0, 600, 0)
+        i+=1
     pass
