@@ -7,6 +7,7 @@ from ctypes import *
 import pyautogui
 import numpy as np
 import time
+import cv2
 
 
 # search for the windows of yys
@@ -57,13 +58,14 @@ def clickRange(win, box):
 def capture(win):
     active(win)
     rect = win32gui.GetWindowRect(win)
-    return pyautogui.screenshot(region=(rect[0], rect[1], 600, rect[3]))
+    imageRGB = pyautogui.screenshot(region=(rect[0], rect[1], 600, rect[3]))
+    return cv2.cvtColor(np.asarray(imageRGB), cv2.COLOR_RGB2GRAY)
 
 
 # 模板匹配查找
 def find(win, path):
     img = capture(win)
-    templLoc = pyautogui.locateAll(img, path, grayscale=True, confidence=0.8)
+    templLoc = pyautogui.locateAll(haystackImage=img, needleImage=path, grayscale=True, confidence=0.7)
     return list(templLoc)
 
 
@@ -78,6 +80,17 @@ def sleep(min, max):
         time.sleep(min)
     else:
         time.sleep(random.randint(min*10, max*10) / 10)
+
+
+# 切割图片
+def cropImg(img, topLeft, bottomRight):
+    w, h = img.shape[::-1]
+    left = topLeft[0] if topLeft[0] >= 0 else 0
+    top = topLeft[1] if topLeft[1] >= 0 else 0
+    right = bottomRight[0] if bottomRight[0] < w else w-1
+    bottom = bottomRight[1] if bottomRight[1] < h else h-1
+    return img[int(top) : int(bottom), int(left) : int(right)]
+
 
 if __name__ == "__main__":
     wins = search()
