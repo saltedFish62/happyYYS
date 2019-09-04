@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from transitions import Machine
 import time
 
@@ -78,23 +77,11 @@ class Hun11(object):
     # 是否胜利
     def isVic(self):
         return self._times % 2 == 1
-=======
-from utils import *
-from res import *
-
-players = search()
-playerNum = len(players)
-
-for i, player in enumerate(players):
-  setPos(player, i * 600, 0, 600, 0)
-  i += 1
->>>>>>> 47a0c398446989a93dae153ea1b185464ff38fdd
 
     # 是否失败
     def isFail(self):
         return self._times % 2 == 0
 
-<<<<<<< HEAD
     # 胜利：点击结算奖励 需要判断两种 一种是胜利的鼓 一种是红蛋 两种都是胜利条件
     def _checkVic(self):
         print('checkVic')
@@ -155,50 +142,3 @@ try:
                 print("设置默认邀请")
 except KeyboardInterrupt:
     print('quit')
-=======
-captain = 0
-for player in players:
-  img=capture(player)
-  width, height = img.shape[::-1]
-  if has(player, cropImg(img, (0, 0), (width / 4, height))):
-    captain = player
-
-if captain == 0:
-  print("can't find captain, quit.")
-  sys.exit()
-
-members = players[:]
-members.remove(captain)
-print("players is ", players)
-print("captain is ", captain)
-print("members is ", members)
-
-def checkPrepare():
-  prepared = set()
-  while len(prepared) < playerNum:
-    for player in players:
-      clickRange(player, find(player, prepare))
-      if not has(player, prepare):
-        prepared.add(player)
-  return True
-
-state = "group"
-while True:
-  if state == "group":
-    inviteBtnNum = len(find(captain, invite))
-    if inviteBtnNum == 3 - playerNum:
-      boxes = find(captain, start)
-      if len(boxes) < 1:
-        continue
-      print(boxes)
-      clickRange(captain, boxes[0])
-      state = "fighting"
-  elif state == "fighting":
-    # check prepare
-    if checkPrepare():
-      state = "end"
-  elif state == "end":
-    break
-
-
->>>>>>> 47a0c398446989a93dae153ea1b185464ff38fdd
