@@ -1,5 +1,7 @@
 from transitions import Machine
 import time
+from utils import *
+from res import *
 
 states = [
     "group",
@@ -36,6 +38,7 @@ transitions = [
      'prepare': '_reinvite', 'conditions': 'isInGroup'}
 ]
 
+images = loadImages()
 
 class Hun11(object):
     needDe = True
@@ -111,8 +114,25 @@ class Hun11(object):
         print('reinvite')
 
 
-captain = 1
-players = [1, 2, 3]
+captain = 0
+players = search()
+
+i = 0
+for player in players:
+  setPos(player, i*600, 0, 600, 0)
+  i+=1
+
+sleep(0.6, 0.6)
+
+for player in players:
+  img = capture(player)
+  _, height = img.shape[::-1]
+  if has(image=cropImg(img, (0, 0), (150, height)), templ=images['captain']):
+    captain = player
+
+if captain == 0:
+  print('找不到队长')
+  sys.exit()
 
 hun11 = Hun11(captain, players)
 machine = Machine(model=hun11, states=states,
