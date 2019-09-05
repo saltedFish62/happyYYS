@@ -55,7 +55,6 @@ def clickRange(win, box):
     x = random.randint(int(left), int(left+w))
     y = random.randint(int(top), int(top+h))
     click(win, x, y)
-    sleep(0.1, 0.3)
 
 # 截图窗口
 def capture(win):
@@ -91,7 +90,7 @@ def sleep(min, max):
     if min == max:
         time.sleep(min)
     else:
-        time.sleep(random.randint(min*10, max*10) / 10)
+        time.sleep(random.randint(int(min*10), int(max*10)) / 10)
 
 
 # 切割图片
@@ -123,4 +122,8 @@ def getPos():
     return pyautogui.position()
 
 if __name__ == "__main__":
+    # img = readImg('./screen/yaoqing.png')
+    img = readImg('./screen/win.png')
+    templ = readImg('./images/is_fighting.png')
+    print(find(image=img, templ=templ))
     pass

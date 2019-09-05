@@ -20,7 +20,7 @@ transitions = [
     {'trigger': 'start', 'source': 'group', 'dest': 'fight_pre',
      'prepare': '_start', 'conditions': 'hasStarted'},
     {'trigger': 'prepare', 'source': 'fight_pre', 'dest': 'fighting',
-     'prepare': '_prepare', 'conditions': 'hasPrepared'},
+     'conditions': 'hasPrepared'},
     {'trigger': 'fight', 'source': 'fighting', 'dest': 'fighting_p3',
      'prepare': '_fight', 'conditions': 'isFightingP3'},
     {'trigger': 'checkFight', "source": "fighting_p3",
@@ -32,13 +32,13 @@ transitions = [
     {'trigger': 'checkVic', 'source': 'vic', 'dest': 'invite_default',
      'prepare': 'check', 'conditions': 'needInviteDefault'},
     {'trigger': 'checkVic', 'source': 'vic', 'dest': 'group',
-     'prepare': 'check', 'conditions': 'isInGroup'},
+     'prepare': 'check', 'conditions': 'isFightEnd'},
     {'trigger': 'defaultInvite', 'source': 'invite_default', 'dest': 'group',
-     'prepare': 'setInviteDefault', 'conditions': 'isInGroup'},
+     'prepare': 'setInviteDefault', 'conditions': 'isFightEnd'},
     {'trigger': 'checkFail', 'source': 'fail', 'dest': 'reinvite',
      'prepare': 'check', 'conditions': 'needReinvite'},
     {'trigger': 'reinvite', 'source': 'reinvite', 'dest': 'group',
-     'prepare': '_reinvite', 'conditions': 'isInGroup'}
+     'prepare': '_reinvite', 'conditions': 'isFightEnd'}
 ]
 
 images = loadImages()
@@ -65,15 +65,8 @@ class Hun11(object):
     def hasStarted(self):
         return not has(win=self.captain, templ=images['start'])
 
-    # 进入战斗 点击各个队员的准备
-    def _prepare(self):
-        for win in self.players:
-            if has(win=win, templ=images['prepare']):
-                clickRange(win, find(win=win, templ=images['prepare'])[0])
-
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
-        sleep(0.2, 0.5)
         for win in self.players:
             if has(win=win, templ=images['prepare']):
                 return False
@@ -116,7 +109,9 @@ class Hun11(object):
     # 胜利：点击结算奖励 需要判断两种 一种是胜利的鼓 一种是红蛋 两种都是胜利条件
     def check(self):
         for player in players:
-            clickRange(win=player, box=(500, 60, 20, 10))
+            img = capture(player)
+            if has(image=img, templ=images['vic1']) or has(image=img, templ=images['vic2'])
+                clickRange(win=player, box=(500, 60, 20, 10))
         sleep(1, 1.6)
 
     # 是否需要设置默认邀请队友
@@ -124,9 +119,9 @@ class Hun11(object):
         return has(win=self.captain, templ=images['default_invite'])
 
     # 是否在组队界面
-    def isInGroup(self):
-        for player in players:
-            if not has(win=self.captain, templ=images['captain']):
+    def isFightEnd(self):
+        for player in self.players:
+            if has(win=player, templ=images['is_fighting']):
                 return False
         return True
 
@@ -139,7 +134,8 @@ class Hun11(object):
                 clickRange(self.captain, (locs[0][0], locs[0][1], 17, 17))
                 sleep(0.1, 0.3)
                 clickRange(self.captain, (locs[0][0]+60, locs[0][1]+30, 60, 20))
-        sleep(2, 2.1)
+                sleep(0.5, 0.5)
+        sleep(1.4, 1.6)
         for player in self.members:
             while 1:
                 locs = find(win=player, templ=images['accept_default_invite'])
@@ -154,11 +150,13 @@ class Hun11(object):
 
     # 重新邀请的操作 队长点击确认 队员同意邀请
     def _reinvite(self):
-        clickRange(self.captain, find(
-            win=self.captain, templ=images['confirm'])[0])
-        for player in self.members:
-            clickRange(player, find(
-                win=player, templ=images['accept_invite'])[0])
+        locs = find(win=self.captain, templ=images['reinvite'])
+        if len(locs) > 0:
+            clickRange(win=self.captain, box=(locs[0][0]+130, locs[0][1]+80, 60, 25))
+            sleep(1, 1.5)
+            for player in self.members:
+                clickRange(player, find(
+                    win=player, templ=images['accept_invite'])[0])
 
 
 captain = 0
@@ -185,9 +183,8 @@ hun11 = Hun11(captain, players)
 machine = Machine(model=hun11, states=states,
                   transitions=transitions, initial="group")
 
-i = 0
 try:
-    while i < 30:
+    while 1:
         while not hun11.start():
             print("组队中，队员未齐")
         while not hun11.prepare():
