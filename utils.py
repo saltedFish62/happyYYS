@@ -55,7 +55,7 @@ def clickRange(win, box):
     x = random.randint(int(left), int(left+w))
     y = random.randint(int(top), int(top+h))
     click(win, x, y)
-
+    sleep(0.1, 0.3)
 
 # 截图窗口
 def capture(win):
@@ -66,17 +66,16 @@ def capture(win):
 
 
 # 模板匹配查找
-def find(templ, image, win=0):
+def find(templ, image=[], win=0):
     if win != 0:
         img = capture(win)
     else:
         img = image
     
     templW, templH = templ.shape[::-1]
-    print(templW, templH)
     matchResult = cv2.matchTemplate(img, templ, cv2.TM_CCOEFF_NORMED)
 
-    locs = np.where(matchResult >= 0.85)
+    locs = np.where(matchResult >= 0.75)
     result = []
     for pt in zip(*locs[::-1]):
         result.append((pt[0], pt[1], templW, templH))
@@ -84,7 +83,7 @@ def find(templ, image, win=0):
 
 
 # 是否存在
-def has(templ, win=0, image=[]):
+def has(templ, image=[], win=0):
     return len(find(win=win, image=image, templ=templ)) != 0
 
 # 休眠一段时间
@@ -119,5 +118,9 @@ def loadImages():
         images[name] = readImg(path+'/'+img)
     return images
 
+# 获取鼠标位置
+def getPos():
+    return pyautogui.position()
+
 if __name__ == "__main__":
-    print(loadImages()['captain'])
+    pass

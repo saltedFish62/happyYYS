@@ -8,6 +8,7 @@ states = [
     "fight_pre",
     "fighting",
     "fighting_p3",
+    "end_fight",
     "vic",
     "fail",
     "reinvite",
@@ -17,101 +18,147 @@ states = [
 
 transitions = [
     {'trigger': 'start', 'source': 'group', 'dest': 'fight_pre',
-        'prepare': '_start', 'conditions': 'hasStarted'},
+     'prepare': '_start', 'conditions': 'hasStarted'},
     {'trigger': 'prepare', 'source': 'fight_pre', 'dest': 'fighting',
      'prepare': '_prepare', 'conditions': 'hasPrepared'},
     {'trigger': 'fight', 'source': 'fighting', 'dest': 'fighting_p3',
      'prepare': '_fight', 'conditions': 'isFightingP3'},
-    {'trigger': 'checkEnd', 'source': 'fighting_p3', 'dest': 'vic',
-     'prepare': 'fight_p3', 'conditions': 'isVic'},
-    {'trigger': 'checkEnd', 'source': 'fighting_p3', 'dest': 'fail',
-     'prepare': 'fight_p3', 'conditions': 'isFail'},
+    {'trigger': 'checkFight', "source": "fighting_p3",
+     'prepare': 'fight_p3', 'dest': 'end_fight', 'conditions': 'isEnd'},
+    {'trigger': 'checkEnd', 'source': 'end_fight',
+     'dest': 'vic', 'conditions': 'isVic'},
+    {'trigger': 'checkEnd', 'source': 'end_fight',
+     'dest': 'fail', 'conditions': 'isFail'},
     {'trigger': 'checkVic', 'source': 'vic', 'dest': 'invite_default',
-     'prepare': '_checkVic', 'conditions': 'needInviteDefault'},
+     'prepare': 'check', 'conditions': 'needInviteDefault'},
     {'trigger': 'checkVic', 'source': 'vic', 'dest': 'group',
-     'prepare': '_checkVic', 'conditions': 'isInGroup'},
+     'prepare': 'check', 'conditions': 'isInGroup'},
     {'trigger': 'defaultInvite', 'source': 'invite_default', 'dest': 'group',
      'prepare': 'setInviteDefault', 'conditions': 'isInGroup'},
     {'trigger': 'checkFail', 'source': 'fail', 'dest': 'reinvite',
-     'prepare': '_checkFail', 'conditions': 'needReinvite'},
+     'prepare': 'check', 'conditions': 'needReinvite'},
     {'trigger': 'reinvite', 'source': 'reinvite', 'dest': 'group',
      'prepare': '_reinvite', 'conditions': 'isInGroup'}
 ]
 
 images = loadImages()
 
-class Hun11(object):
-    needDe = True
-    _times = 0
 
+class Hun11(object):
     def __init__(self, captain, players):
         self.captain = captain
         self.members = players[:]
         self.members.remove(captain)
+        self.players = players
 
     # 如果队伍人数满足要求则开车 否则不停更新 直到人齐点击开始战斗
     def _start(self):
-        print('start')
+        image = capture(self.captain)
+        locs = find(templ=images['invite'], image=image)
+        if len(locs) == 2 - len(self.members):
+            locs = find(templ=images['start'], win=self.captain)
+            if len(locs) == 1:
+                clickRange(self.captain, locs[0])
+                print('开始战斗')
 
     # 如果已经开始则返回 True
     def hasStarted(self):
-        return True
+        return not has(win=self.captain, templ=images['start'])
 
     # 进入战斗 点击各个队员的准备
     def _prepare(self):
-        print('prepare')
+        for win in self.players:
+            if has(win=win, templ=images['prepare']):
+                clickRange(win, find(win=win, templ=images['prepare'])[0])
 
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
+        sleep(0.2, 0.5)
+        for win in self.players:
+            if has(win=win, templ=images['prepare']):
+                return False
         return True
 
     # 前两回合的战斗 间隔为 2s 点击中间的怪
     def _fight(self):
+        clickRange(self.captain, (270, 80, 40, 30))
+        sleep(1, 2)
+        if getPos()[0] < 10:
+            sys.exit()
         print('fight')
 
     # 判断是否到了p3打大蛇的阶段 是则返回True
     def isFightingP3(self):
-        return True
+        return has(win=self.captain, templ=images['hun11_p3'])
 
     # 打大蛇时疯狂点击大蛇
     def fight_p3(self):
-        print('p3')
+        clickRange(self.captain, (260, 80, 60, 30))
+
+    # 判断战斗是否结束
+    def isEnd(self):
+        return not has(win=self.captain, templ=images["hun11_p3"])
 
     # 是否胜利
     def isVic(self):
-        return self._times % 2 == 1
+        if has(win=self.captain, templ=images['vic1']):
+            return True
+        if has(win=self.captain, templ=images['vic2']):
+            return True
+        return False
 
     # 是否失败
     def isFail(self):
-        return self._times % 2 == 0
+        if has(win=self.captain, templ=images['fail']):
+            return True
+        return False
 
     # 胜利：点击结算奖励 需要判断两种 一种是胜利的鼓 一种是红蛋 两种都是胜利条件
-    def _checkVic(self):
-        print('checkVic')
+    def check(self):
+        for player in players:
+            clickRange(win=player, box=(500, 60, 20, 10))
+        sleep(1, 1.6)
 
     # 是否需要设置默认邀请队友
     def needInviteDefault(self):
-        return self.needDe
+        return has(win=self.captain, templ=images['default_invite'])
 
     # 是否在组队界面
     def isInGroup(self):
+        for player in players:
+            if not has(win=self.captain, templ=images['captain']):
+                return False
         return True
 
     # 设置默认邀请 队长发出默认邀请 队员接受默认邀请
     def setInviteDefault(self):
-        print('default')
-
-    # 失败：点击失败 判断条件为失败的败字
-    def _checkFail(self):
-        print('fail')
+        while has(win=self.captain, templ=images['default_invite']):
+            locs = find(image=capture(self.captain),
+                        templ=images['is_invite_default_uncheck'])
+            if len(locs):
+                clickRange(self.captain, (locs[0][0], locs[0][1], 17, 17))
+                sleep(0.1, 0.3)
+                clickRange(self.captain, (locs[0][0]+60, locs[0][1]+30, 60, 20))
+        sleep(2, 2.1)
+        for player in self.members:
+            while 1:
+                locs = find(win=player, templ=images['accept_default_invite'])
+                if len(locs) != 0:
+                    clickRange(player, locs[0])
+                else:
+                    break
 
     # 失败后队长会有是否重新邀请的框 判断是否进入重新邀请的流程
     def needReinvite(self):
-        return True
+        return has(win=self.captain, templ=images['reinvite'])
 
     # 重新邀请的操作 队长点击确认 队员同意邀请
     def _reinvite(self):
-        print('reinvite')
+        clickRange(self.captain, find(
+            win=self.captain, templ=images['confirm'])[0])
+        for player in self.members:
+            clickRange(player, find(
+                win=player, templ=images['accept_invite'])[0])
 
 
 captain = 0
@@ -119,20 +166,20 @@ players = search()
 
 i = 0
 for player in players:
-  setPos(player, i*600, 0, 600, 0)
-  i+=1
+    setPos(player, i*600, 0, 600, 0)
+    i += 1
 
 sleep(0.6, 0.6)
 
 for player in players:
-  img = capture(player)
-  _, height = img.shape[::-1]
-  if has(image=cropImg(img, (0, 0), (150, height)), templ=images['captain']):
-    captain = player
+    img = capture(player)
+    _, height = img.shape[::-1]
+    if has(image=cropImg(img, (0, 0), (150, height)), templ=images['captain']):
+        captain = player
 
 if captain == 0:
-  print('找不到队长')
-  sys.exit()
+    print('找不到队长')
+    sys.exit()
 
 hun11 = Hun11(captain, players)
 machine = Machine(model=hun11, states=states,
@@ -140,15 +187,17 @@ machine = Machine(model=hun11, states=states,
 
 i = 0
 try:
-    while i < 10:
+    while i < 30:
         while not hun11.start():
             print("组队中，队员未齐")
         while not hun11.prepare():
             print("战斗准备")
         while not hun11.fight():
             print("前两回合战斗")
-        while not hun11.checkEnd():
+        while not hun11.checkFight():
             print("打大蛇")
+        while not hun11.checkEnd():
+            print("正在结算")
         if hun11.state == 'fail':
             while not hun11.checkFail():
                 print("失败")
