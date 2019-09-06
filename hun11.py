@@ -43,7 +43,6 @@ transitions = [
 
 images = loadImages()
 
-
 class Hun11(object):
     def __init__(self, captain, players):
         self.captain = captain
@@ -110,7 +109,7 @@ class Hun11(object):
     def check(self):
         for player in players:
             img = capture(player)
-            if has(image=img, templ=images['vic1']) or has(image=img, templ=images['vic2'])
+            if has(image=img, templ=images['vic1']) or has(image=img, templ=images['vic2']):
                 clickRange(win=player, box=(500, 60, 20, 10))
         sleep(1, 1.6)
 
@@ -133,7 +132,8 @@ class Hun11(object):
             if len(locs):
                 clickRange(self.captain, (locs[0][0], locs[0][1], 17, 17))
                 sleep(0.1, 0.3)
-                clickRange(self.captain, (locs[0][0]+60, locs[0][1]+30, 60, 20))
+                clickRange(
+                    self.captain, (locs[0][0]+60, locs[0][1]+30, 60, 20))
                 sleep(0.5, 0.5)
         sleep(1.4, 1.6)
         for player in self.members:
@@ -152,7 +152,8 @@ class Hun11(object):
     def _reinvite(self):
         locs = find(win=self.captain, templ=images['reinvite'])
         if len(locs) > 0:
-            clickRange(win=self.captain, box=(locs[0][0]+130, locs[0][1]+80, 60, 25))
+            clickRange(win=self.captain, box=(
+                locs[0][0]+130, locs[0][1]+80, 60, 25))
             sleep(1, 1.5)
             for player in self.members:
                 clickRange(player, find(
