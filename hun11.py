@@ -184,6 +184,7 @@ hun11 = Hun11(captain, players)
 machine = Machine(model=hun11, states=states,
                   transitions=transitions, initial="group")
 
+times = 0
 try:
     while 1:
         while not hun11.start():
@@ -207,5 +208,6 @@ try:
         if hun11.state == 'invite_default':
             while not hun11.defaultInvite():
                 print("设置默认邀请")
+        print(times, '次')
 except KeyboardInterrupt:
     print('quit')
