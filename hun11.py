@@ -66,10 +66,7 @@ class Hun11(object):
 
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
-        for win in self.players:
-            if has(win=win, templ=images['prepare']):
-                return False
-        return True
+        return not has(win=self.captain, templ=images['prepare'])
 
     # 前两回合的战斗 间隔为 2s 点击中间的怪
     def _fight(self):
