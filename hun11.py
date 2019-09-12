@@ -64,7 +64,12 @@ class Hun11(object):
     # 如果已经开始则返回 True
     def hasStarted(self):
         sleep(2.4, 2.5)
-        return has(win=self.captain, templ=images['prepare'])
+        img = capture(self.captain)
+        if has(image=img, templ=images['prepare']):
+            return True
+        if has(image=img, templ=images['fight']):
+            return True
+        return False
 
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
