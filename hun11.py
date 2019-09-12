@@ -73,6 +73,7 @@ class Hun11(object):
 
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
+        sleep(0.5, 0.5)
         return not has(win=self.captain, templ=images['prepare'])
 
     # 前两回合的战斗 间隔为 2s 点击中间的怪
@@ -142,10 +143,10 @@ class Hun11(object):
         sleep(1.4, 1.6)
         for player in self.members:
             while 1:
+                sleep(0.2, 0.3)
                 locs = find(win=player, templ=images['accept_default_invite'])
                 if len(locs) != 0:
                     clickRange(player, locs[0])
-                else:
                     break
 
     # 失败后队长会有是否重新邀请的框 判断是否进入重新邀请的流程
