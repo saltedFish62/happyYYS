@@ -59,10 +59,12 @@ class Hun11(object):
             if len(locs) == 1:
                 clickRange(self.captain, locs[0])
                 print('开始战斗')
+        sleep(0.2, 0.4)
 
     # 如果已经开始则返回 True
     def hasStarted(self):
-        return not has(win=self.captain, templ=images['start'])
+        sleep(2.4, 2.5)
+        return has(win=self.captain, templ=images['prepare'])
 
     # 是否全员准备 查询队长是否存在准备按钮 否则返回true
     def hasPrepared(self):
