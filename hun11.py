@@ -214,5 +214,6 @@ try:
             while not hun11.defaultInvite():
                 print("设置默认邀请")
         print(times, '次')
+        times += 1
 except KeyboardInterrupt:
     print('quit')
