@@ -66,16 +66,16 @@ class Gouliang(object):
         loc = find(image=img, templ=images['teammate'])
         if len(loc) > 0:
             tl = loc[0]
-            if self.teammateImg == None:
+            if len(self.teammateImg) < 1:
                 tmImg = cropImg(img=img, topLeft=(
                     tl[0] - 110, tl[1]), bottomRight=(tl[0]-70, tl[1]+40))
                 self.teammateImg = tmImg
-            print('has teammate')
-            print(self.teammateImg)
+            return True
         else:
             tm = find(image=img, templ=self.teammateImg)
             if len(tm) > 0:
                 clickRange(win=self.captain, box=tm[0])
+        return False
 
 
     # 邀请队友
