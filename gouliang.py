@@ -1,4 +1,6 @@
 from transitions import Machine
+from utils import *
+import sys
 
 states: [
   'creating_group',
@@ -141,11 +143,29 @@ class Gouliang(object):
     def isCreating(self):
       pass
 
+images = loadImages()
 
 captain = 0
-teammate = 1
+teammate = 0
 
-# find captain and teammate
+players = search()
+
+i = 0
+for player in players:
+  setPos(player, i*600, 0, 600, 0)
+  i+=1
+
+sleep(0.6, 0.6)
+if has(win=players[0], templ=images['captain1']):
+  captain = players[0]
+  teammate = players[1]
+else:
+  captain = players[1]
+  teammate = players[0]
+
+if captain == 0:
+  print('找不到队长')
+  sys.exit()
 
 gouliang = Gouliang(captain, teammate)
 machine = Machine(model=gouliang, states=states,
