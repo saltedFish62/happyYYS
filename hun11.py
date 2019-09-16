@@ -1,7 +1,5 @@
 from transitions import Machine
-import time
 from utils import *
-from res import *
 
 states = [
     "group",
