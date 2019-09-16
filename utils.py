@@ -74,10 +74,11 @@ def find(templ, image=[], win=0):
     templW, templH = templ.shape[::-1]
     matchResult = cv2.matchTemplate(img, templ, cv2.TM_CCOEFF_NORMED)
 
-    locs = np.where(matchResult >= 0.75)
+    locs = np.where(matchResult >= 0.85)
     result = []
     for pt in zip(*locs[::-1]):
         result.append((pt[0], pt[1], templW, templH))
+        # (x, y, width, height)
     return result
 
 
@@ -120,6 +121,10 @@ def loadImages():
 # 获取鼠标位置
 def getPos():
     return pyautogui.position()
+
+# 获取当前时间节点
+def now():
+    return time.process_time()
 
 if __name__ == "__main__":
     # img = readImg('./screen/yaoqing.png')
