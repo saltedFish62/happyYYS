@@ -89,7 +89,7 @@ class Hun11(object):
 
     # 打大蛇时疯狂点击大蛇
     def fight_p3(self):
-        clickRange(self.captain, (260, 80, 60, 30))
+        clickRange(self.captain, (270, 80, 60, 30))
 
     # 判断战斗是否结束
     def isEnd(self):
