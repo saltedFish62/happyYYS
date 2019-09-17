@@ -57,7 +57,6 @@ class Hun11(object):
             locs = find(templ=images['start'], win=self.captain)
             if len(locs) == 1:
                 clickRange(self.captain, locs[0])
-                print('开始战斗')
         sleep(0.2, 0.4)
 
     # 如果已经开始则返回 True
@@ -81,7 +80,6 @@ class Hun11(object):
         sleep(1, 2)
         if getPos()[0] < 10:
             sys.exit()
-        print('fight')
 
     # 判断是否到了p3打大蛇的阶段 是则返回True
     def isFightingP3(self):
@@ -191,28 +189,21 @@ machine = Machine(model=hun11, states=states,
 times = 0
 try:
     while 1:
-        while not hun11.start():
-            print("组队中，队员未齐")
-        while not hun11.prepare():
-            print("战斗准备")
-        while not hun11.fight():
-            print("前两回合战斗")
-        while not hun11.checkFight():
-            print("打大蛇")
-        while not hun11.checkEnd():
-            print("正在结算")
+        while not hun11.start(): pass
+        while not hun11.prepare(): pass
+        while not hun11.fight(): pass
+        while not hun11.checkFight(): pass
+        while not hun11.checkEnd(): pass
         if hun11.state == 'fail':
             while not hun11.checkFail():
                 print("失败")
             while not hun11.reinvite():
                 print("重新邀请")
         else:
-            while not hun11.checkVic():
-                print("胜利！")
+            while not hun11.checkVic(): pass
         if hun11.state == 'invite_default':
-            while not hun11.defaultInvite():
-                print("设置默认邀请")
-        print(times, '次')
+            while not hun11.defaultInvite(): pass
         times += 1
+        print(times, '次')
 except KeyboardInterrupt:
     print('quit')
