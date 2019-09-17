@@ -57,35 +57,48 @@ class Gouliang(object):
         self.captain = captain
         self.teammate = teammate
         self.hasMoved = False
-        self.teammateImg = None
+        self.teammateImg = 0
 
     # 是否有队友
+
     def hasTeammate(self):
         # 把队友头像截下来
         img = capture(self.captain)
         loc = find(image=img, templ=images['teammate'])
         if len(loc) > 0:
             tl = loc[0]
-            if len(self.teammateImg) < 1:
+            if self.teammateImg == 0:
                 tmImg = cropImg(img=img, topLeft=(
                     tl[0] - 110, tl[1]), bottomRight=(tl[0]-70, tl[1]+40))
                 self.teammateImg = tmImg
             return True
         else:
-            tm = find(image=img, templ=self.teammateImg)
-            if len(tm) > 0:
-                clickRange(win=self.captain, box=tm[0])
+            if self.teammateImg != 0:
+                tm = find(image=img, templ=self.teammateImg)
+                if len(tm) > 0:
+                    clickRange(win=self.captain, box=tm[0])
+        sleep(0.5, 0.5)
         return False
 
-
     # 邀请队友
+
     def inviteTeammate(self):
-        pass
+        locs = find(win=self.captain, templ=images['captain1'])
+        print(locs)
+        if len(locs) > 0:
+            clickRange(win=self.captain, box=locs[0])
+            sleep(0.5, 0.6)
+            while True:
+                locs = find(win=self.teammate, templ=images['accept_invite'])
+                if len(locs) > 0:
+                    clickRange(win=self.teammate, box=locs[0])
+                sleep(0.3, 0.3)
+                break
 
     # 是否队员和队友都在场景里
 
     def isInScene(self):
-        pass
+        return has(win=self.captain, templ=images['is_in_scene'])
 
     # 找经验怪并点击
 
@@ -208,6 +221,10 @@ try:
     while True:
         while not gouliang.findTeammate():
             pass
-        pass
+        while not gouliang.enter():
+            print('进入战斗')
+        start = now()
+        while now() - start < 2:
+            
 except KeyboardInterrupt:
     print('quit')
