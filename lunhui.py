@@ -10,7 +10,7 @@ images = loadImages()
 # 是否在选关
 def isSelecting():
   # 如果在选关界面
-  len(getEntries) > 0
+  len(getEntries()) > 0
 
 
 # 查找入口列表
