@@ -1,3 +1,7 @@
+'''
+pip install opencv-contrib-python==3.4.2.16 pyautogui matplotlib pywin32 transitions
+'''
+
 import win32api
 import win32con
 import win32gui
@@ -56,6 +60,7 @@ def clickRange(win, box):
     y = random.randint(int(top), int(top+h))
     click(win, x, y)
 
+
 # 截图窗口
 def capture(win):
     active(win)
@@ -70,7 +75,7 @@ def find(templ, image=[], win=0):
         img = capture(win)
     else:
         img = image
-    
+
     templW, templH = templ.shape[::-1]
     matchResult = cv2.matchTemplate(img, templ, cv2.TM_CCOEFF_NORMED)
 
@@ -85,6 +90,7 @@ def find(templ, image=[], win=0):
 # 是否存在
 def has(templ, image=[], win=0):
     return len(find(win=win, image=image, templ=templ)) != 0
+
 
 # 休眠一段时间
 def sleep(min, max):
@@ -101,11 +107,13 @@ def cropImg(img, topLeft, bottomRight):
     top = topLeft[1] if topLeft[1] >= 0 else 0
     right = bottomRight[0] if bottomRight[0] < w else w-1
     bottom = bottomRight[1] if bottomRight[1] < h else h-1
-    return img[int(top) : int(bottom), int(left) : int(right)]
+    return img[int(top): int(bottom), int(left): int(right)]
+
 
 # 灰度读取图片
 def readImg(path):
     return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+
 
 # 加载图片
 def loadImages():
@@ -118,13 +126,16 @@ def loadImages():
         images[name] = readImg(path+'/'+img)
     return images
 
+
 # 获取鼠标位置
 def getPos():
     return pyautogui.position()
 
+
 # 获取当前时间节点
 def now():
     return time.process_time()
+
 
 if __name__ == "__main__":
     # img = readImg('./screen/yaoqing.png')
