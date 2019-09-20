@@ -10,8 +10,7 @@ images = loadImages()
 # 是否在选关
 def isSelecting():
   # 如果在选关界面
-  if has(win=win, templ=images['']):
-    pass
+  len(getEntries) > 0
 
 
 # 查找入口列表
@@ -49,4 +48,8 @@ def clear():
       return
 
 
-clear()
+while 1:
+  locs = find(win=win, templ=images['accept_invite'])
+  if len(locs) > 0:
+    clickRange(win=win, box=locs[0])
+  sleep(1, 2)
