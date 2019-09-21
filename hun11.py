@@ -180,7 +180,7 @@ for player in players:
 
 if captain == 0:
     print('找不到队长')
-    sys.exit()
+    quitScript()
 
 hun11 = Hun11(captain, players)
 machine = Machine(model=hun11, states=states,

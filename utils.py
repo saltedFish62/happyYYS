@@ -137,6 +137,10 @@ def now():
     return time.process_time()
 
 
+# 退出程序
+def quitScript():
+    sys.exit()
+
 if __name__ == "__main__":
     # img = readImg('./screen/yaoqing.png')
     img = readImg('./screen/win.png')
