@@ -6,16 +6,18 @@ setPos(win, 0, 0, 600, 0)
 
 images = loadImages()
 
+sleep(0.4, 0.4)
 
 # 是否在选关
 def isSelecting():
   # 如果在选关界面
-  len(getEntries()) > 0
+  return len(getEntries()) > 0
 
 
 # 查找入口列表
 def getEntries():
-  return find(win=win, templ=images['lunhui_entry'])
+  entries = find(win=win, templ=images['lunhui_entry'])
+  return entries
 
 
 # 战斗
@@ -34,17 +36,18 @@ def enter():
     sleep(0.2, 0.2)
     if not isSelecting():
       sleep(0.3, 0.3)
-      clickRange(win=win, box=find(win=win, templ=images['lunhui_start']))
+      clickRange(win=win, box=find(win=win, templ=images['lunhui_start'])[0])
       return
 
 
 # 全清
 def clear():
   while True:
-    if isSelecting():
+    entries = getEntries()
+    if len(entries):
       enter()
       fighting()
-    if len(getEntries()) < 1:
+    if len(entries) < 1:
       return
 
 
