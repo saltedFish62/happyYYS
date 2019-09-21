@@ -23,7 +23,7 @@ def getEntries():
 # 战斗
 def fighting():
   sleep(1.5, 2)
-  while not isSelecting():
+  while has(win=win, templ=images['vic2']):
     clickRange(win=win, box=(500, 60, 20, 10))
     sleep(1.5, 2)
 
