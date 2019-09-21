@@ -225,6 +225,7 @@ try:
             print('进入战斗')
         start = now()
         while now() - start < 2:
-            
+            if gouliang.findExp():
+                break
 except KeyboardInterrupt:
     print('quit')
