@@ -56,7 +56,6 @@ transitions = [
     }
 ]
 
-
 images = loadImages()
 
 captain = 0
