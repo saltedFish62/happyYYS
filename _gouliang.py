@@ -219,13 +219,21 @@ machine = Machine(model=gouliang, states=states,
 times = 0
 try:
     while True:
+        # 寻找队友
         while not gouliang.findTeammate():
             pass
+        # 找到队友之后 进入场景
         while not gouliang.enter():
-            print('进入战斗')
+            print('进入场景')
+        
+        # 计时 2 秒，两秒后找不到经验怪则划屏
         start = now()
         while now() - start < 2:
             if gouliang.findExp():
                 break
+        while not gouliang.checkMon():
+            pass
+        while not gouliang.fighting():
+            pass
 except KeyboardInterrupt:
     print('quit')
