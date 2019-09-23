@@ -10,7 +10,9 @@ class Gouliang(object):
 
     def hasEntered(self):
         img = capture(self.captain)
-        
+        # 如果已经在场景里
+        if has(image=img, images['']):
+            return True
         pass
 
 
