@@ -57,7 +57,7 @@ class Gouliang(object):
             img = capture(self.captain)
             exp = find(image=img, templ=images['exp'])
             if len(exp) > 0:
-
+                pass
         return False
 
 

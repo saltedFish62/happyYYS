@@ -148,21 +148,25 @@ def matchPixel(a, b):
     while i < 3:
         if a[i] < b[i]-5 or a[i] > b[i]+5:
             return False
+        i += 1
     return True
 
 
 # 找色点
 def findPixel(image, pixel):
-    width, height = image.shape[::-1]
-    print(width + "   " + height)
+    height = len(image)
+    width = len(image[0])
     i = 0
+    arr = []
     while i < height:
         j = 0
         while j < width:
             if matchPixel(image[i, j], pixel):
-                return (i, j)
+                arr.appen((i, j))
             j+=1
         i+=1
+    return arr
+
 
 if __name__ == "__main__":
     # img = readImg('./screen/yaoqing.png')
