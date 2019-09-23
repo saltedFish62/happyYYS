@@ -70,7 +70,7 @@ def capture(win):
 
 
 # 模板匹配查找
-def find(templ, image=[], win=0):
+def find(templ, image=[], win=0, th=0.85):
     if win != 0:
         img = capture(win)
     else:
@@ -79,7 +79,7 @@ def find(templ, image=[], win=0):
     templW, templH = templ.shape[::-1]
     matchResult = cv2.matchTemplate(img, templ, cv2.TM_CCOEFF_NORMED)
 
-    locs = np.where(matchResult >= 0.85)
+    locs = np.where(matchResult >= th)
     result = []
     for pt in zip(*locs[::-1]):
         result.append((pt[0], pt[1], templW, templH))
@@ -140,6 +140,29 @@ def now():
 # 退出程序
 def quitScript():
     sys.exit()
+
+
+# 比对像素
+def matchPixel(a, b):
+    i = 0
+    while i < 3:
+        if a[i] < b[i]-5 or a[i] > b[i]+5:
+            return False
+    return True
+
+
+# 找色点
+def findPixel(image, pixel):
+    width, height = image.shape[::-1]
+    print(width + "   " + height)
+    i = 0
+    while i < height:
+        j = 0
+        while j < width:
+            if matchPixel(image[i, j], pixel):
+                return (i, j)
+            j+=1
+        i+=1
 
 if __name__ == "__main__":
     # img = readImg('./screen/yaoqing.png')
